@@ -1,0 +1,436 @@
+syntax = "proto3";
+
+package mms;
+option go_package = "./mms";
+
+message AppointmentInfo {
+  optional string id = 1;
+  optional int64 created_at = 2;
+  optional int64 updated_at = 3;
+  //  Patient name | 患者姓名
+  optional string patient_name = 4;
+  //  Phone number | 联系电话
+  optional string phone_number = 5;
+  //  ID card number | 身份证号
+  optional string id_card = 6;
+  //  Gender 1:male 2:female | 性别 1:男 2:女
+  optional int32 gender = 7;
+  //  Age | 年龄
+  optional int32 age = 8;
+  //  Appointment time | 预约时间
+  optional int64 appointment_time = 9;
+  //  Symptoms description | 症状描述
+  optional string symptoms = 10;
+  //  Status 1:pending 2:confirmed 3:completed 4:cancelled 5:expired | 状态 1:待确认 2:已确认 3:已完成 4:已取消 5:已过期
+  optional int32 status = 11;
+  //  Remarks | 备注信息
+  optional string remarks = 12;
+  //  User ID | 用户ID
+  optional string user_id = 13;
+}
+
+message AppointmentListReq {
+  uint64 page = 1;
+  uint64 page_size = 2;
+  optional string patient_name = 3;
+  optional string phone_number = 4;
+  optional string id_card = 5;
+  optional string user_id = 6;
+}
+
+message AppointmentListResp {
+  uint64 total = 1;
+  repeated AppointmentInfo data = 2;
+}
+
+message BaseIDResp {
+  uint64 id = 1;
+  string msg = 2;
+}
+
+message BaseResp {
+  string msg = 1;
+}
+
+message BaseUUIDResp {
+  string id = 1;
+  string msg = 2;
+}
+
+message CallbackReq {
+  string state = 1;
+  string code = 2;
+}
+
+//  base message
+message Empty {}
+
+message IDReq {
+  uint64 id = 1;
+}
+
+message IDsReq {
+  repeated uint64 ids = 1;
+}
+
+message MedicineInfo {
+  optional uint64 id = 1;
+  optional int64 created_at = 2;
+  optional int64 updated_at = 3;
+  //  Status 1: normal 2: ban | 状态 1 正常 2 禁用
+  optional uint32 status = 4;
+  //  Sort Number | 排序编号
+  optional uint32 sort = 5;
+  //  Medicine name | 药品名称
+  optional string name = 6;
+  //  Quantity in stock | 库存数量
+  optional uint32 quantity = 7;
+  //  Description | 药品描述
+  optional string description = 8;
+  //  Remarks | 备注信息
+  optional string remarks = 9;
+  //  Images | 图片路径
+  optional string images = 10;
+}
+
+message MedicineListReq {
+  uint64 page = 1;
+  uint64 page_size = 2;
+  optional string name = 3;
+  optional string description = 4;
+  optional string remarks = 5;
+}
+
+message MedicineListResp {
+  uint64 total = 1;
+  repeated MedicineInfo data = 2;
+}
+
+message MemberInfo {
+  optional string id = 1;
+  optional int64 created_at = 2;
+  optional int64 updated_at = 3;
+  optional uint32 status = 4;
+  optional string username = 5;
+  optional string password = 6;
+  optional string nickname = 7;
+  optional uint64 rank_id = 8;
+  optional string mobile = 9;
+  optional string email = 10;
+  optional string avatar = 11;
+  optional string wechat_id = 12;
+  optional string rank_code = 13;
+  optional int64 expired_at = 14;
+}
+
+message MemberListReq {
+  uint64 page = 1;
+  uint64 page_size = 2;
+  optional string username = 3;
+  optional string nickname = 4;
+  optional string mobile = 5;
+  optional string email = 6;
+  optional uint64 rank_id = 7;
+  optional string wechat_id = 8;
+}
+
+message MemberListResp {
+  uint64 total = 1;
+  repeated MemberInfo data = 2;
+}
+
+message MemberLoginResp {
+  string id = 1;
+  string nickname = 2;
+  string avatar = 3;
+  uint64 rank_id = 4;
+}
+
+message MemberRankInfo {
+  optional uint64 id = 1;
+  optional int64 created_at = 2;
+  optional int64 updated_at = 3;
+  optional string name = 4;
+  optional string description = 5;
+  optional string remark = 6;
+  optional string code = 7;
+}
+
+message MemberRankListReq {
+  uint64 page = 1;
+  uint64 page_size = 2;
+  optional string name = 3;
+  optional string description = 4;
+  optional string remark = 5;
+}
+
+message MemberRankListResp {
+  uint64 total = 1;
+  repeated MemberRankInfo data = 2;
+}
+
+message MemberRegisterReq {
+  string username = 1;
+  string email = 2;
+  string password = 3;
+}
+
+message MobileReq {
+  string mobile = 1;
+}
+
+message NewsInfo {
+  optional uint64 id = 1;
+  optional int64 created_at = 2;
+  optional int64 updated_at = 3;
+  //  Status 1: normal 2: ban | 状态 1 正常 2 禁用
+  optional uint32 status = 4;
+  //  Sort Number | 排序编号
+  optional uint32 sort = 5;
+  //  Chinese title | 中文标题
+  optional string title_zh = 6;
+  //  English title | 英文标题
+  optional string title_en = 7;
+  //  Russian title | 俄语标题
+  optional string title_ru = 8;
+  //  Kazakh title | 哈萨克语标题
+  optional string title_kk = 9;
+  //  Chinese content | 中文内容
+  optional string content_zh = 10;
+  //  English content | 英文内容
+  optional string content_en = 11;
+  //  Russian content | 俄语内容
+  optional string content_ru = 12;
+  //  Kazakh content | 哈萨克语内容
+  optional string content_kk = 13;
+  //  Cover image URL | 封面图片URL
+  optional string cover_url = 14;
+}
+
+message NewsListReq {
+  uint64 page = 1;
+  uint64 page_size = 2;
+  optional string title_zh = 3;
+  optional string title_en = 4;
+  optional string title_ru = 5;
+}
+
+message NewsListResp {
+  uint64 total = 1;
+  repeated NewsInfo data = 2;
+}
+
+message OauthLoginReq {
+  string state = 1;
+  string provider = 2;
+}
+
+message OauthProviderInfo {
+  optional uint64 id = 1;
+  optional int64 created_at = 2;
+  optional int64 updated_at = 3;
+  optional string name = 4;
+  optional string client_id = 5;
+  optional string client_secret = 6;
+  optional string redirect_url = 7;
+  optional string scopes = 8;
+  optional string auth_url = 9;
+  optional string token_url = 10;
+  optional uint64 auth_style = 11;
+  optional string info_url = 12;
+}
+
+message OauthProviderListReq {
+  uint64 page = 1;
+  uint64 page_size = 2;
+  optional string name = 3;
+}
+
+message OauthProviderListResp {
+  uint64 total = 1;
+  repeated OauthProviderInfo data = 2;
+}
+
+message OauthRedirectResp {
+  string url = 1;
+}
+
+message PageInfoReq {
+  uint64 page = 1;
+  uint64 page_size = 2;
+}
+
+message SwiperInfo {
+  optional uint64 id = 1;
+  optional int64 created_at = 2;
+  optional int64 updated_at = 3;
+  //  Status 1: normal 2: ban | 状态 1 正常 2 禁用
+  optional uint32 status = 4;
+  //  Sort Number | 排序编号
+  optional uint32 sort = 5;
+  //  Chinese title | 中文标题
+  optional string title_zh = 6;
+  //  English title | 英文标题
+  optional string title_en = 7;
+  //  Russian title | 俄语标题
+  optional string title_ru = 8;
+  //  Kazakh title | 哈萨克语标题
+  optional string title_kk = 9;
+  //  Chinese banner image | 中文轮播图
+  optional string banner_zh = 10;
+  //  English banner image | 英文轮播图
+  optional string banner_en = 11;
+  //  Russian banner image | 俄语轮播图
+  optional string banner_ru = 12;
+  //  Kazakh banner image | 哈萨克语轮播图
+  optional string banner_kk = 13;
+  //  Chinese content | 中文内容
+  optional string content_zh = 14;
+  //  English content | 英文内容
+  optional string content_en = 15;
+  //  Russian content | 俄语内容
+  optional string content_ru = 16;
+  //  Kazakh content | 哈萨克语内容
+  optional string content_kk = 17;
+  //  Jump Url | 跳转地址
+  optional string jump_url = 18;
+}
+
+message SwiperListReq {
+  uint64 page = 1;
+  uint64 page_size = 2;
+  optional string title_zh = 3;
+  optional string title_en = 4;
+  optional string title_ru = 5;
+}
+
+message SwiperListResp {
+  uint64 total = 1;
+  repeated SwiperInfo data = 2;
+}
+
+message TokenInfo {
+  optional string id = 1;
+  optional int64 created_at = 2;
+  optional int64 updated_at = 3;
+  optional uint32 status = 4;
+  optional string uuid = 5;
+  optional string token = 6;
+  optional string source = 7;
+  optional int64 expired_at = 8;
+  optional string username = 9;
+}
+
+message TokenListReq {
+  uint64 page = 1;
+  uint64 page_size = 2;
+  optional string username = 3;
+  optional string nickname = 4;
+  optional string email = 5;
+  optional string uuid = 6;
+}
+
+message TokenListResp {
+  uint64 total = 1;
+  repeated TokenInfo data = 2;
+}
+
+message UUIDReq {
+  string id = 1;
+}
+
+message UUIDsReq {
+  repeated string ids = 1;
+}
+
+message UsernameReq {
+  string username = 1;
+}
+
+service Mms {
+  //  Appointment management
+  //  group: appointment
+  rpc createAppointment(AppointmentInfo) returns (BaseUUIDResp);
+  //  group: appointment
+  rpc updateAppointment(AppointmentInfo) returns (BaseResp);
+  //  group: appointment
+  rpc getAppointmentList(AppointmentListReq) returns (AppointmentListResp);
+  //  group: appointment
+  rpc getAppointmentById(UUIDReq) returns (AppointmentInfo);
+  //  group: appointment
+  rpc deleteAppointment(UUIDsReq) returns (BaseResp);
+  //  group: base
+  rpc initDatabase(Empty) returns (BaseResp);
+  //  Medicine management
+  //  group: medicine
+  rpc getMedicineList(MedicineListReq) returns (MedicineListResp);
+  //  group: medicine
+  rpc getMedicineById(IDReq) returns (MedicineInfo);
+  //  Member management
+  //  group: member
+  rpc createMember(MemberInfo) returns (BaseUUIDResp);
+  //  group: member
+  rpc updateMember(MemberInfo) returns (BaseResp);
+  //  group: member
+  rpc getMemberList(MemberListReq) returns (MemberListResp);
+  //  group: member
+  rpc deleteMember(UUIDsReq) returns (BaseResp);
+  //  group: member
+  rpc getMemberById(UUIDReq) returns (MemberInfo);
+  //  group: member
+  rpc getMemberByUsername(UsernameReq) returns (MemberInfo);
+  //  group: member
+  rpc getMemberByMobile(MobileReq) returns (MemberInfo);
+  //  MemberRank management
+  //  group: memberrank
+  rpc createMemberRank(MemberRankInfo) returns (BaseIDResp);
+  //  group: memberrank
+  rpc updateMemberRank(MemberRankInfo) returns (BaseResp);
+  //  group: memberrank
+  rpc getMemberRankList(MemberRankListReq) returns (MemberRankListResp);
+  //  group: memberrank
+  rpc getMemberRankById(IDReq) returns (MemberRankInfo);
+  //  group: memberrank
+  rpc deleteMemberRank(IDsReq) returns (BaseResp);
+  //  News management
+  //  group: news
+  rpc getNewsList(NewsListReq) returns (NewsListResp);
+  //  group: news
+  rpc getNewsById(IDReq) returns (NewsInfo);
+  //  OauthProvider management
+  //  group: oauthprovider
+  rpc createOauthProvider(OauthProviderInfo) returns (BaseIDResp);
+  //  group: oauthprovider
+  rpc updateOauthProvider(OauthProviderInfo) returns (BaseResp);
+  //  group: oauthprovider
+  rpc getOauthProviderList(OauthProviderListReq) returns (OauthProviderListResp);
+  //  group: oauthprovider
+  rpc getOauthProviderById(IDReq) returns (OauthProviderInfo);
+  //  group: oauthprovider
+  rpc deleteOauthProvider(IDsReq) returns (BaseResp);
+  //  group: oauthprovider
+  rpc oauthLogin(OauthLoginReq) returns (OauthRedirectResp);
+  //  group: oauthprovider
+  rpc oauthCallback(CallbackReq) returns (MemberInfo);
+  //  group: oauthprovider
+  rpc wechatMiniProgramLogin(OauthLoginReq) returns (BaseResp);
+  //  Swiper management
+  //  group: swiper
+  rpc getSwiperList(SwiperListReq) returns (SwiperListResp);
+  //  group: swiper
+  rpc getSwiperById(IDReq) returns (SwiperInfo);
+  //  Token management
+  //  group: token
+  rpc createToken(TokenInfo) returns (BaseUUIDResp);
+  //  group: token
+  rpc deleteToken(UUIDsReq) returns (BaseResp);
+  //  group: token
+  rpc getTokenList(TokenListReq) returns (TokenListResp);
+  //  group: token
+  rpc getTokenById(UUIDReq) returns (TokenInfo);
+  //  group: token
+  rpc blockUserAllToken(UUIDReq) returns (BaseResp);
+  //  group: token
+  rpc updateToken(TokenInfo) returns (BaseResp);
+}
+
