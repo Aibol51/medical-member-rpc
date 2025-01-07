@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/suyuan32/simple-admin-member-rpc/ent/appointment"
-	"github.com/suyuan32/simple-admin-member-rpc/ent/predicate"
 	"github.com/suyuan32/simple-admin-member-rpc/internal/svc"
 	"github.com/suyuan32/simple-admin-member-rpc/internal/utils/dberrorhandler"
 	"github.com/suyuan32/simple-admin-member-rpc/types/mms"
@@ -28,20 +27,8 @@ func NewGetAppointmentListLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 }
 
 func (l *GetAppointmentListLogic) GetAppointmentList(in *mms.AppointmentListReq) (*mms.AppointmentListResp, error) {
-	var predicates []predicate.Appointment
-	if in.PatientName != nil {
-		predicates = append(predicates, appointment.PatientNameContains(*in.PatientName))
-	}
-	if in.PhoneNumber != nil {
-		predicates = append(predicates, appointment.PhoneNumberContains(*in.PhoneNumber))
-	}
-	if in.IdCard != nil {
-		predicates = append(predicates, appointment.IDCardContains(*in.IdCard))
-	}
-	if in.UserId != nil {
-		predicates = append(predicates, appointment.UserIDContains(*in.UserId))
-	}
-	result, err := l.svcCtx.DB.Appointment.Query().Where(predicates...).Page(l.ctx, in.Page, in.PageSize)
+	userId := l.ctx.Value("userId").(string)
+	result, err := l.svcCtx.DB.Appointment.Query().Where(appointment.UserIDContains(userId)).Page(l.ctx, in.Page, in.PageSize)
 
 	if err != nil {
 		return nil, dberrorhandler.DefaultEntError(l.Logger, err, in)
