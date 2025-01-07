@@ -27,8 +27,8 @@ func NewGetAppointmentListLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 }
 
 func (l *GetAppointmentListLogic) GetAppointmentList(in *mms.AppointmentListReq) (*mms.AppointmentListResp, error) {
-	userId := l.ctx.Value("userId").(string)
-	result, err := l.svcCtx.DB.Appointment.Query().Where(appointment.UserIDContains(userId)).Page(l.ctx, in.Page, in.PageSize)
+
+	result, err := l.svcCtx.DB.Appointment.Query().Where(appointment.UserIDContains(in.UserId)).Page(l.ctx, in.Page, in.PageSize)
 
 	if err != nil {
 		return nil, dberrorhandler.DefaultEntError(l.Logger, err, in)

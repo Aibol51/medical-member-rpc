@@ -36,6 +36,7 @@ message AppointmentListResp {
 message AppointmentListReq {
   uint64 page = 1;
   uint64 page_size = 2;
+  string user_id = 3;
 }
 
 
