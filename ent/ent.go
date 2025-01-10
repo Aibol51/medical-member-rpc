@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/suyuan32/simple-admin-member-rpc/ent/appointment"
+	"github.com/suyuan32/simple-admin-member-rpc/ent/medicalrecord"
 	"github.com/suyuan32/simple-admin-member-rpc/ent/medicine"
 	"github.com/suyuan32/simple-admin-member-rpc/ent/member"
 	"github.com/suyuan32/simple-admin-member-rpc/ent/memberrank"
@@ -81,6 +82,7 @@ func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
 			appointment.Table:   appointment.ValidColumn,
+			medicalrecord.Table: medicalrecord.ValidColumn,
 			medicine.Table:      medicine.ValidColumn,
 			member.Table:        member.ValidColumn,
 			memberrank.Table:    memberrank.ValidColumn,

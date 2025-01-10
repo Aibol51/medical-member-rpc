@@ -23,6 +23,9 @@ type (
 	Empty                 = mms.Empty
 	IDReq                 = mms.IDReq
 	IDsReq                = mms.IDsReq
+	MedicalRecordInfo     = mms.MedicalRecordInfo
+	MedicalRecordListReq  = mms.MedicalRecordListReq
+	MedicalRecordListResp = mms.MedicalRecordListResp
 	MedicineInfo          = mms.MedicineInfo
 	MedicineListReq       = mms.MedicineListReq
 	MedicineListResp      = mms.MedicineListResp
@@ -62,6 +65,9 @@ type (
 		GetAppointmentById(ctx context.Context, in *UUIDReq, opts ...grpc.CallOption) (*AppointmentInfo, error)
 		DeleteAppointment(ctx context.Context, in *UUIDsReq, opts ...grpc.CallOption) (*BaseResp, error)
 		InitDatabase(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*BaseResp, error)
+		// MedicalRecord management
+		GetMedicalRecordList(ctx context.Context, in *MedicalRecordListReq, opts ...grpc.CallOption) (*MedicalRecordListResp, error)
+		GetMedicalRecordById(ctx context.Context, in *UUIDReq, opts ...grpc.CallOption) (*MedicalRecordInfo, error)
 		// Medicine management
 		GetMedicineList(ctx context.Context, in *MedicineListReq, opts ...grpc.CallOption) (*MedicineListResp, error)
 		GetMedicineById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*MedicineInfo, error)
@@ -143,6 +149,17 @@ func (m *defaultMms) DeleteAppointment(ctx context.Context, in *UUIDsReq, opts .
 func (m *defaultMms) InitDatabase(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*BaseResp, error) {
 	client := mms.NewMmsClient(m.cli.Conn())
 	return client.InitDatabase(ctx, in, opts...)
+}
+
+// MedicalRecord management
+func (m *defaultMms) GetMedicalRecordList(ctx context.Context, in *MedicalRecordListReq, opts ...grpc.CallOption) (*MedicalRecordListResp, error) {
+	client := mms.NewMmsClient(m.cli.Conn())
+	return client.GetMedicalRecordList(ctx, in, opts...)
+}
+
+func (m *defaultMms) GetMedicalRecordById(ctx context.Context, in *UUIDReq, opts ...grpc.CallOption) (*MedicalRecordInfo, error) {
+	client := mms.NewMmsClient(m.cli.Conn())
+	return client.GetMedicalRecordById(ctx, in, opts...)
 }
 
 // Medicine management

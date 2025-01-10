@@ -16,6 +16,8 @@ type Tx struct {
 	config
 	// Appointment is the client for interacting with the Appointment builders.
 	Appointment *AppointmentClient
+	// MedicalRecord is the client for interacting with the MedicalRecord builders.
+	MedicalRecord *MedicalRecordClient
 	// Medicine is the client for interacting with the Medicine builders.
 	Medicine *MedicineClient
 	// Member is the client for interacting with the Member builders.
@@ -162,6 +164,7 @@ func (tx *Tx) Client() *Client {
 
 func (tx *Tx) init() {
 	tx.Appointment = NewAppointmentClient(tx.config)
+	tx.MedicalRecord = NewMedicalRecordClient(tx.config)
 	tx.Medicine = NewMedicineClient(tx.config)
 	tx.Member = NewMemberClient(tx.config)
 	tx.MemberRank = NewMemberRankClient(tx.config)

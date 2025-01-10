@@ -7,6 +7,7 @@ import (
 
 	uuid "github.com/gofrs/uuid/v5"
 	"github.com/suyuan32/simple-admin-member-rpc/ent/appointment"
+	"github.com/suyuan32/simple-admin-member-rpc/ent/medicalrecord"
 	"github.com/suyuan32/simple-admin-member-rpc/ent/medicine"
 	"github.com/suyuan32/simple-admin-member-rpc/ent/member"
 	"github.com/suyuan32/simple-admin-member-rpc/ent/memberrank"
@@ -44,6 +45,25 @@ func init() {
 	appointmentDescID := appointmentMixinFields0[0].Descriptor()
 	// appointment.DefaultID holds the default value on creation for the id field.
 	appointment.DefaultID = appointmentDescID.Default.(func() uuid.UUID)
+	medicalrecordMixin := schema.MedicalRecord{}.Mixin()
+	medicalrecordMixinFields0 := medicalrecordMixin[0].Fields()
+	_ = medicalrecordMixinFields0
+	medicalrecordFields := schema.MedicalRecord{}.Fields()
+	_ = medicalrecordFields
+	// medicalrecordDescCreatedAt is the schema descriptor for created_at field.
+	medicalrecordDescCreatedAt := medicalrecordMixinFields0[1].Descriptor()
+	// medicalrecord.DefaultCreatedAt holds the default value on creation for the created_at field.
+	medicalrecord.DefaultCreatedAt = medicalrecordDescCreatedAt.Default.(func() time.Time)
+	// medicalrecordDescUpdatedAt is the schema descriptor for updated_at field.
+	medicalrecordDescUpdatedAt := medicalrecordMixinFields0[2].Descriptor()
+	// medicalrecord.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	medicalrecord.DefaultUpdatedAt = medicalrecordDescUpdatedAt.Default.(func() time.Time)
+	// medicalrecord.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	medicalrecord.UpdateDefaultUpdatedAt = medicalrecordDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// medicalrecordDescID is the schema descriptor for id field.
+	medicalrecordDescID := medicalrecordMixinFields0[0].Descriptor()
+	// medicalrecord.DefaultID holds the default value on creation for the id field.
+	medicalrecord.DefaultID = medicalrecordDescID.Default.(func() uuid.UUID)
 	medicineMixin := schema.Medicine{}.Mixin()
 	medicineMixinFields0 := medicineMixin[0].Fields()
 	_ = medicineMixinFields0

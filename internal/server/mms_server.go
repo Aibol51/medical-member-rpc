@@ -8,6 +8,7 @@ import (
 
 	"github.com/suyuan32/simple-admin-member-rpc/internal/logic/appointment"
 	"github.com/suyuan32/simple-admin-member-rpc/internal/logic/base"
+	"github.com/suyuan32/simple-admin-member-rpc/internal/logic/medicalRecord"
 	"github.com/suyuan32/simple-admin-member-rpc/internal/logic/medicine"
 	"github.com/suyuan32/simple-admin-member-rpc/internal/logic/member"
 	"github.com/suyuan32/simple-admin-member-rpc/internal/logic/memberrank"
@@ -59,6 +60,17 @@ func (s *MmsServer) DeleteAppointment(ctx context.Context, in *mms.UUIDsReq) (*m
 func (s *MmsServer) InitDatabase(ctx context.Context, in *mms.Empty) (*mms.BaseResp, error) {
 	l := base.NewInitDatabaseLogic(ctx, s.svcCtx)
 	return l.InitDatabase(in)
+}
+
+// MedicalRecord management
+func (s *MmsServer) GetMedicalRecordList(ctx context.Context, in *mms.MedicalRecordListReq) (*mms.MedicalRecordListResp, error) {
+	l := medicalRecord.NewGetMedicalRecordListLogic(ctx, s.svcCtx)
+	return l.GetMedicalRecordList(in)
+}
+
+func (s *MmsServer) GetMedicalRecordById(ctx context.Context, in *mms.UUIDReq) (*mms.MedicalRecordInfo, error) {
+	l := medicalRecord.NewGetMedicalRecordByIdLogic(ctx, s.svcCtx)
+	return l.GetMedicalRecordById(in)
 }
 
 // Medicine management

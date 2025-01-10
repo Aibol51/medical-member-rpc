@@ -25,6 +25,8 @@ const (
 	Mms_GetAppointmentById_FullMethodName     = "/mms.Mms/getAppointmentById"
 	Mms_DeleteAppointment_FullMethodName      = "/mms.Mms/deleteAppointment"
 	Mms_InitDatabase_FullMethodName           = "/mms.Mms/initDatabase"
+	Mms_GetMedicalRecordList_FullMethodName   = "/mms.Mms/getMedicalRecordList"
+	Mms_GetMedicalRecordById_FullMethodName   = "/mms.Mms/getMedicalRecordById"
 	Mms_GetMedicineList_FullMethodName        = "/mms.Mms/getMedicineList"
 	Mms_GetMedicineById_FullMethodName        = "/mms.Mms/getMedicineById"
 	Mms_CreateMember_FullMethodName           = "/mms.Mms/createMember"
@@ -76,6 +78,11 @@ type MmsClient interface {
 	DeleteAppointment(ctx context.Context, in *UUIDsReq, opts ...grpc.CallOption) (*BaseResp, error)
 	//  group: base
 	InitDatabase(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*BaseResp, error)
+	// MedicalRecord management
+	// group: medicalRecord
+	GetMedicalRecordList(ctx context.Context, in *MedicalRecordListReq, opts ...grpc.CallOption) (*MedicalRecordListResp, error)
+	// group: medicalRecord
+	GetMedicalRecordById(ctx context.Context, in *UUIDReq, opts ...grpc.CallOption) (*MedicalRecordInfo, error)
 	// Medicine management
 	// group: medicine
 	GetMedicineList(ctx context.Context, in *MedicineListReq, opts ...grpc.CallOption) (*MedicineListResp, error)
@@ -211,6 +218,26 @@ func (c *mmsClient) InitDatabase(ctx context.Context, in *Empty, opts ...grpc.Ca
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(BaseResp)
 	err := c.cc.Invoke(ctx, Mms_InitDatabase_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *mmsClient) GetMedicalRecordList(ctx context.Context, in *MedicalRecordListReq, opts ...grpc.CallOption) (*MedicalRecordListResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(MedicalRecordListResp)
+	err := c.cc.Invoke(ctx, Mms_GetMedicalRecordList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *mmsClient) GetMedicalRecordById(ctx context.Context, in *UUIDReq, opts ...grpc.CallOption) (*MedicalRecordInfo, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(MedicalRecordInfo)
+	err := c.cc.Invoke(ctx, Mms_GetMedicalRecordById_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -554,6 +581,11 @@ type MmsServer interface {
 	DeleteAppointment(context.Context, *UUIDsReq) (*BaseResp, error)
 	//  group: base
 	InitDatabase(context.Context, *Empty) (*BaseResp, error)
+	// MedicalRecord management
+	// group: medicalRecord
+	GetMedicalRecordList(context.Context, *MedicalRecordListReq) (*MedicalRecordListResp, error)
+	// group: medicalRecord
+	GetMedicalRecordById(context.Context, *UUIDReq) (*MedicalRecordInfo, error)
 	// Medicine management
 	// group: medicine
 	GetMedicineList(context.Context, *MedicineListReq) (*MedicineListResp, error)
@@ -652,6 +684,12 @@ func (UnimplementedMmsServer) DeleteAppointment(context.Context, *UUIDsReq) (*Ba
 }
 func (UnimplementedMmsServer) InitDatabase(context.Context, *Empty) (*BaseResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method InitDatabase not implemented")
+}
+func (UnimplementedMmsServer) GetMedicalRecordList(context.Context, *MedicalRecordListReq) (*MedicalRecordListResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMedicalRecordList not implemented")
+}
+func (UnimplementedMmsServer) GetMedicalRecordById(context.Context, *UUIDReq) (*MedicalRecordInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMedicalRecordById not implemented")
 }
 func (UnimplementedMmsServer) GetMedicineList(context.Context, *MedicineListReq) (*MedicineListResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetMedicineList not implemented")
@@ -874,6 +912,42 @@ func _Mms_InitDatabase_Handler(srv interface{}, ctx context.Context, dec func(in
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MmsServer).InitDatabase(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Mms_GetMedicalRecordList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MedicalRecordListReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MmsServer).GetMedicalRecordList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Mms_GetMedicalRecordList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MmsServer).GetMedicalRecordList(ctx, req.(*MedicalRecordListReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Mms_GetMedicalRecordById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UUIDReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MmsServer).GetMedicalRecordById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Mms_GetMedicalRecordById_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MmsServer).GetMedicalRecordById(ctx, req.(*UUIDReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1484,6 +1558,14 @@ var Mms_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "initDatabase",
 			Handler:    _Mms_InitDatabase_Handler,
+		},
+		{
+			MethodName: "getMedicalRecordList",
+			Handler:    _Mms_GetMedicalRecordList_Handler,
+		},
+		{
+			MethodName: "getMedicalRecordById",
+			Handler:    _Mms_GetMedicalRecordById_Handler,
 		},
 		{
 			MethodName: "getMedicineList",

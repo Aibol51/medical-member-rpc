@@ -9,6 +9,9 @@ import (
 // Appointment is the predicate function for appointment builders.
 type Appointment func(*sql.Selector)
 
+// MedicalRecord is the predicate function for medicalrecord builders.
+type MedicalRecord func(*sql.Selector)
+
 // Medicine is the predicate function for medicine builders.
 type Medicine func(*sql.Selector)
 
