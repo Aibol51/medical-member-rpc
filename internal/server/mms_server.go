@@ -8,12 +8,14 @@ import (
 
 	"github.com/suyuan32/simple-admin-member-rpc/internal/logic/appointment"
 	"github.com/suyuan32/simple-admin-member-rpc/internal/logic/base"
+	"github.com/suyuan32/simple-admin-member-rpc/internal/logic/expert"
 	"github.com/suyuan32/simple-admin-member-rpc/internal/logic/medicalRecord"
 	"github.com/suyuan32/simple-admin-member-rpc/internal/logic/medicine"
 	"github.com/suyuan32/simple-admin-member-rpc/internal/logic/member"
 	"github.com/suyuan32/simple-admin-member-rpc/internal/logic/memberrank"
 	"github.com/suyuan32/simple-admin-member-rpc/internal/logic/news"
 	"github.com/suyuan32/simple-admin-member-rpc/internal/logic/oauthprovider"
+	"github.com/suyuan32/simple-admin-member-rpc/internal/logic/service"
 	"github.com/suyuan32/simple-admin-member-rpc/internal/logic/swiper"
 	"github.com/suyuan32/simple-admin-member-rpc/internal/logic/token"
 	"github.com/suyuan32/simple-admin-member-rpc/internal/svc"
@@ -60,6 +62,17 @@ func (s *MmsServer) DeleteAppointment(ctx context.Context, in *mms.UUIDsReq) (*m
 func (s *MmsServer) InitDatabase(ctx context.Context, in *mms.Empty) (*mms.BaseResp, error) {
 	l := base.NewInitDatabaseLogic(ctx, s.svcCtx)
 	return l.InitDatabase(in)
+}
+
+// Expert management
+func (s *MmsServer) GetExpertList(ctx context.Context, in *mms.ExpertListReq) (*mms.ExpertListResp, error) {
+	l := expert.NewGetExpertListLogic(ctx, s.svcCtx)
+	return l.GetExpertList(in)
+}
+
+func (s *MmsServer) GetExpertById(ctx context.Context, in *mms.IDReq) (*mms.ExpertInfo, error) {
+	l := expert.NewGetExpertByIdLogic(ctx, s.svcCtx)
+	return l.GetExpertById(in)
 }
 
 // MedicalRecord management
@@ -196,6 +209,17 @@ func (s *MmsServer) OauthCallback(ctx context.Context, in *mms.CallbackReq) (*mm
 func (s *MmsServer) WechatMiniProgramLogin(ctx context.Context, in *mms.OauthLoginReq) (*mms.BaseResp, error) {
 	l := oauthprovider.NewWechatMiniProgramLoginLogic(ctx, s.svcCtx)
 	return l.WechatMiniProgramLogin(in)
+}
+
+// Service management
+func (s *MmsServer) GetServiceList(ctx context.Context, in *mms.ServiceListReq) (*mms.ServiceListResp, error) {
+	l := service.NewGetServiceListLogic(ctx, s.svcCtx)
+	return l.GetServiceList(in)
+}
+
+func (s *MmsServer) GetServiceById(ctx context.Context, in *mms.IDReq) (*mms.ServiceInfo, error) {
+	l := service.NewGetServiceByIdLogic(ctx, s.svcCtx)
+	return l.GetServiceById(in)
 }
 
 // Swiper management

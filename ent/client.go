@@ -17,12 +17,14 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/suyuan32/simple-admin-member-rpc/ent/appointment"
+	"github.com/suyuan32/simple-admin-member-rpc/ent/expert"
 	"github.com/suyuan32/simple-admin-member-rpc/ent/medicalrecord"
 	"github.com/suyuan32/simple-admin-member-rpc/ent/medicine"
 	"github.com/suyuan32/simple-admin-member-rpc/ent/member"
 	"github.com/suyuan32/simple-admin-member-rpc/ent/memberrank"
 	"github.com/suyuan32/simple-admin-member-rpc/ent/news"
 	"github.com/suyuan32/simple-admin-member-rpc/ent/oauthprovider"
+	"github.com/suyuan32/simple-admin-member-rpc/ent/service"
 	"github.com/suyuan32/simple-admin-member-rpc/ent/swiper"
 	"github.com/suyuan32/simple-admin-member-rpc/ent/token"
 
@@ -36,6 +38,8 @@ type Client struct {
 	Schema *migrate.Schema
 	// Appointment is the client for interacting with the Appointment builders.
 	Appointment *AppointmentClient
+	// Expert is the client for interacting with the Expert builders.
+	Expert *ExpertClient
 	// MedicalRecord is the client for interacting with the MedicalRecord builders.
 	MedicalRecord *MedicalRecordClient
 	// Medicine is the client for interacting with the Medicine builders.
@@ -48,6 +52,8 @@ type Client struct {
 	News *NewsClient
 	// OauthProvider is the client for interacting with the OauthProvider builders.
 	OauthProvider *OauthProviderClient
+	// Service is the client for interacting with the Service builders.
+	Service *ServiceClient
 	// Swiper is the client for interacting with the Swiper builders.
 	Swiper *SwiperClient
 	// Token is the client for interacting with the Token builders.
@@ -64,12 +70,14 @@ func NewClient(opts ...Option) *Client {
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.Appointment = NewAppointmentClient(c.config)
+	c.Expert = NewExpertClient(c.config)
 	c.MedicalRecord = NewMedicalRecordClient(c.config)
 	c.Medicine = NewMedicineClient(c.config)
 	c.Member = NewMemberClient(c.config)
 	c.MemberRank = NewMemberRankClient(c.config)
 	c.News = NewNewsClient(c.config)
 	c.OauthProvider = NewOauthProviderClient(c.config)
+	c.Service = NewServiceClient(c.config)
 	c.Swiper = NewSwiperClient(c.config)
 	c.Token = NewTokenClient(c.config)
 }
@@ -165,12 +173,14 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		ctx:           ctx,
 		config:        cfg,
 		Appointment:   NewAppointmentClient(cfg),
+		Expert:        NewExpertClient(cfg),
 		MedicalRecord: NewMedicalRecordClient(cfg),
 		Medicine:      NewMedicineClient(cfg),
 		Member:        NewMemberClient(cfg),
 		MemberRank:    NewMemberRankClient(cfg),
 		News:          NewNewsClient(cfg),
 		OauthProvider: NewOauthProviderClient(cfg),
+		Service:       NewServiceClient(cfg),
 		Swiper:        NewSwiperClient(cfg),
 		Token:         NewTokenClient(cfg),
 	}, nil
@@ -193,12 +203,14 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		ctx:           ctx,
 		config:        cfg,
 		Appointment:   NewAppointmentClient(cfg),
+		Expert:        NewExpertClient(cfg),
 		MedicalRecord: NewMedicalRecordClient(cfg),
 		Medicine:      NewMedicineClient(cfg),
 		Member:        NewMemberClient(cfg),
 		MemberRank:    NewMemberRankClient(cfg),
 		News:          NewNewsClient(cfg),
 		OauthProvider: NewOauthProviderClient(cfg),
+		Service:       NewServiceClient(cfg),
 		Swiper:        NewSwiperClient(cfg),
 		Token:         NewTokenClient(cfg),
 	}, nil
@@ -230,8 +242,8 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
-		c.Appointment, c.MedicalRecord, c.Medicine, c.Member, c.MemberRank, c.News,
-		c.OauthProvider, c.Swiper, c.Token,
+		c.Appointment, c.Expert, c.MedicalRecord, c.Medicine, c.Member, c.MemberRank,
+		c.News, c.OauthProvider, c.Service, c.Swiper, c.Token,
 	} {
 		n.Use(hooks...)
 	}
@@ -241,8 +253,8 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
-		c.Appointment, c.MedicalRecord, c.Medicine, c.Member, c.MemberRank, c.News,
-		c.OauthProvider, c.Swiper, c.Token,
+		c.Appointment, c.Expert, c.MedicalRecord, c.Medicine, c.Member, c.MemberRank,
+		c.News, c.OauthProvider, c.Service, c.Swiper, c.Token,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -253,6 +265,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
 	case *AppointmentMutation:
 		return c.Appointment.mutate(ctx, m)
+	case *ExpertMutation:
+		return c.Expert.mutate(ctx, m)
 	case *MedicalRecordMutation:
 		return c.MedicalRecord.mutate(ctx, m)
 	case *MedicineMutation:
@@ -265,6 +279,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.News.mutate(ctx, m)
 	case *OauthProviderMutation:
 		return c.OauthProvider.mutate(ctx, m)
+	case *ServiceMutation:
+		return c.Service.mutate(ctx, m)
 	case *SwiperMutation:
 		return c.Swiper.mutate(ctx, m)
 	case *TokenMutation:
@@ -404,6 +420,139 @@ func (c *AppointmentClient) mutate(ctx context.Context, m *AppointmentMutation) 
 		return (&AppointmentDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown Appointment mutation op: %q", m.Op())
+	}
+}
+
+// ExpertClient is a client for the Expert schema.
+type ExpertClient struct {
+	config
+}
+
+// NewExpertClient returns a client for the Expert from the given config.
+func NewExpertClient(c config) *ExpertClient {
+	return &ExpertClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `expert.Hooks(f(g(h())))`.
+func (c *ExpertClient) Use(hooks ...Hook) {
+	c.hooks.Expert = append(c.hooks.Expert, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `expert.Intercept(f(g(h())))`.
+func (c *ExpertClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Expert = append(c.inters.Expert, interceptors...)
+}
+
+// Create returns a builder for creating a Expert entity.
+func (c *ExpertClient) Create() *ExpertCreate {
+	mutation := newExpertMutation(c.config, OpCreate)
+	return &ExpertCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Expert entities.
+func (c *ExpertClient) CreateBulk(builders ...*ExpertCreate) *ExpertCreateBulk {
+	return &ExpertCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *ExpertClient) MapCreateBulk(slice any, setFunc func(*ExpertCreate, int)) *ExpertCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &ExpertCreateBulk{err: fmt.Errorf("calling to ExpertClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*ExpertCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &ExpertCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Expert.
+func (c *ExpertClient) Update() *ExpertUpdate {
+	mutation := newExpertMutation(c.config, OpUpdate)
+	return &ExpertUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ExpertClient) UpdateOne(e *Expert) *ExpertUpdateOne {
+	mutation := newExpertMutation(c.config, OpUpdateOne, withExpert(e))
+	return &ExpertUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ExpertClient) UpdateOneID(id uint64) *ExpertUpdateOne {
+	mutation := newExpertMutation(c.config, OpUpdateOne, withExpertID(id))
+	return &ExpertUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Expert.
+func (c *ExpertClient) Delete() *ExpertDelete {
+	mutation := newExpertMutation(c.config, OpDelete)
+	return &ExpertDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *ExpertClient) DeleteOne(e *Expert) *ExpertDeleteOne {
+	return c.DeleteOneID(e.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *ExpertClient) DeleteOneID(id uint64) *ExpertDeleteOne {
+	builder := c.Delete().Where(expert.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ExpertDeleteOne{builder}
+}
+
+// Query returns a query builder for Expert.
+func (c *ExpertClient) Query() *ExpertQuery {
+	return &ExpertQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeExpert},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Expert entity by its id.
+func (c *ExpertClient) Get(ctx context.Context, id uint64) (*Expert, error) {
+	return c.Query().Where(expert.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ExpertClient) GetX(ctx context.Context, id uint64) *Expert {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *ExpertClient) Hooks() []Hook {
+	return c.hooks.Expert
+}
+
+// Interceptors returns the client interceptors.
+func (c *ExpertClient) Interceptors() []Interceptor {
+	return c.inters.Expert
+}
+
+func (c *ExpertClient) mutate(ctx context.Context, m *ExpertMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&ExpertCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&ExpertUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&ExpertUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&ExpertDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Expert mutation op: %q", m.Op())
 	}
 }
 
@@ -1237,6 +1386,139 @@ func (c *OauthProviderClient) mutate(ctx context.Context, m *OauthProviderMutati
 	}
 }
 
+// ServiceClient is a client for the Service schema.
+type ServiceClient struct {
+	config
+}
+
+// NewServiceClient returns a client for the Service from the given config.
+func NewServiceClient(c config) *ServiceClient {
+	return &ServiceClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `service.Hooks(f(g(h())))`.
+func (c *ServiceClient) Use(hooks ...Hook) {
+	c.hooks.Service = append(c.hooks.Service, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `service.Intercept(f(g(h())))`.
+func (c *ServiceClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Service = append(c.inters.Service, interceptors...)
+}
+
+// Create returns a builder for creating a Service entity.
+func (c *ServiceClient) Create() *ServiceCreate {
+	mutation := newServiceMutation(c.config, OpCreate)
+	return &ServiceCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Service entities.
+func (c *ServiceClient) CreateBulk(builders ...*ServiceCreate) *ServiceCreateBulk {
+	return &ServiceCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *ServiceClient) MapCreateBulk(slice any, setFunc func(*ServiceCreate, int)) *ServiceCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &ServiceCreateBulk{err: fmt.Errorf("calling to ServiceClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*ServiceCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &ServiceCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Service.
+func (c *ServiceClient) Update() *ServiceUpdate {
+	mutation := newServiceMutation(c.config, OpUpdate)
+	return &ServiceUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ServiceClient) UpdateOne(s *Service) *ServiceUpdateOne {
+	mutation := newServiceMutation(c.config, OpUpdateOne, withService(s))
+	return &ServiceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ServiceClient) UpdateOneID(id uint64) *ServiceUpdateOne {
+	mutation := newServiceMutation(c.config, OpUpdateOne, withServiceID(id))
+	return &ServiceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Service.
+func (c *ServiceClient) Delete() *ServiceDelete {
+	mutation := newServiceMutation(c.config, OpDelete)
+	return &ServiceDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *ServiceClient) DeleteOne(s *Service) *ServiceDeleteOne {
+	return c.DeleteOneID(s.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *ServiceClient) DeleteOneID(id uint64) *ServiceDeleteOne {
+	builder := c.Delete().Where(service.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ServiceDeleteOne{builder}
+}
+
+// Query returns a query builder for Service.
+func (c *ServiceClient) Query() *ServiceQuery {
+	return &ServiceQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeService},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Service entity by its id.
+func (c *ServiceClient) Get(ctx context.Context, id uint64) (*Service, error) {
+	return c.Query().Where(service.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ServiceClient) GetX(ctx context.Context, id uint64) *Service {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *ServiceClient) Hooks() []Hook {
+	return c.hooks.Service
+}
+
+// Interceptors returns the client interceptors.
+func (c *ServiceClient) Interceptors() []Interceptor {
+	return c.inters.Service
+}
+
+func (c *ServiceClient) mutate(ctx context.Context, m *ServiceMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&ServiceCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&ServiceUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&ServiceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&ServiceDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Service mutation op: %q", m.Op())
+	}
+}
+
 // SwiperClient is a client for the Swiper schema.
 type SwiperClient struct {
 	config
@@ -1506,12 +1788,12 @@ func (c *TokenClient) mutate(ctx context.Context, m *TokenMutation) (Value, erro
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Appointment, MedicalRecord, Medicine, Member, MemberRank, News, OauthProvider,
-		Swiper, Token []ent.Hook
+		Appointment, Expert, MedicalRecord, Medicine, Member, MemberRank, News,
+		OauthProvider, Service, Swiper, Token []ent.Hook
 	}
 	inters struct {
-		Appointment, MedicalRecord, Medicine, Member, MemberRank, News, OauthProvider,
-		Swiper, Token []ent.Interceptor
+		Appointment, Expert, MedicalRecord, Medicine, Member, MemberRank, News,
+		OauthProvider, Service, Swiper, Token []ent.Interceptor
 	}
 )
 

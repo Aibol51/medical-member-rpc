@@ -13,12 +13,14 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/suyuan32/simple-admin-member-rpc/ent/appointment"
+	"github.com/suyuan32/simple-admin-member-rpc/ent/expert"
 	"github.com/suyuan32/simple-admin-member-rpc/ent/medicalrecord"
 	"github.com/suyuan32/simple-admin-member-rpc/ent/medicine"
 	"github.com/suyuan32/simple-admin-member-rpc/ent/member"
 	"github.com/suyuan32/simple-admin-member-rpc/ent/memberrank"
 	"github.com/suyuan32/simple-admin-member-rpc/ent/news"
 	"github.com/suyuan32/simple-admin-member-rpc/ent/oauthprovider"
+	"github.com/suyuan32/simple-admin-member-rpc/ent/service"
 	"github.com/suyuan32/simple-admin-member-rpc/ent/swiper"
 	"github.com/suyuan32/simple-admin-member-rpc/ent/token"
 )
@@ -82,12 +84,14 @@ func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
 			appointment.Table:   appointment.ValidColumn,
+			expert.Table:        expert.ValidColumn,
 			medicalrecord.Table: medicalrecord.ValidColumn,
 			medicine.Table:      medicine.ValidColumn,
 			member.Table:        member.ValidColumn,
 			memberrank.Table:    memberrank.ValidColumn,
 			news.Table:          news.ValidColumn,
 			oauthprovider.Table: oauthprovider.ValidColumn,
+			service.Table:       service.ValidColumn,
 			swiper.Table:        swiper.ValidColumn,
 			token.Table:         token.ValidColumn,
 		})

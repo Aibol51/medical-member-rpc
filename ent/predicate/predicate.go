@@ -9,6 +9,9 @@ import (
 // Appointment is the predicate function for appointment builders.
 type Appointment func(*sql.Selector)
 
+// Expert is the predicate function for expert builders.
+type Expert func(*sql.Selector)
+
 // MedicalRecord is the predicate function for medicalrecord builders.
 type MedicalRecord func(*sql.Selector)
 
@@ -26,6 +29,9 @@ type News func(*sql.Selector)
 
 // OauthProvider is the predicate function for oauthprovider builders.
 type OauthProvider func(*sql.Selector)
+
+// Service is the predicate function for service builders.
+type Service func(*sql.Selector)
 
 // Swiper is the predicate function for swiper builders.
 type Swiper func(*sql.Selector)

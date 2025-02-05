@@ -21,6 +21,9 @@ type (
 	BaseUUIDResp          = mms.BaseUUIDResp
 	CallbackReq           = mms.CallbackReq
 	Empty                 = mms.Empty
+	ExpertInfo            = mms.ExpertInfo
+	ExpertListReq         = mms.ExpertListReq
+	ExpertListResp        = mms.ExpertListResp
 	IDReq                 = mms.IDReq
 	IDsReq                = mms.IDsReq
 	MedicalRecordInfo     = mms.MedicalRecordInfo
@@ -47,6 +50,9 @@ type (
 	OauthProviderListResp = mms.OauthProviderListResp
 	OauthRedirectResp     = mms.OauthRedirectResp
 	PageInfoReq           = mms.PageInfoReq
+	ServiceInfo           = mms.ServiceInfo
+	ServiceListReq        = mms.ServiceListReq
+	ServiceListResp       = mms.ServiceListResp
 	SwiperInfo            = mms.SwiperInfo
 	SwiperListReq         = mms.SwiperListReq
 	SwiperListResp        = mms.SwiperListResp
@@ -65,6 +71,9 @@ type (
 		GetAppointmentById(ctx context.Context, in *UUIDReq, opts ...grpc.CallOption) (*AppointmentInfo, error)
 		DeleteAppointment(ctx context.Context, in *UUIDsReq, opts ...grpc.CallOption) (*BaseResp, error)
 		InitDatabase(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*BaseResp, error)
+		// Expert management
+		GetExpertList(ctx context.Context, in *ExpertListReq, opts ...grpc.CallOption) (*ExpertListResp, error)
+		GetExpertById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*ExpertInfo, error)
 		// MedicalRecord management
 		GetMedicalRecordList(ctx context.Context, in *MedicalRecordListReq, opts ...grpc.CallOption) (*MedicalRecordListResp, error)
 		GetMedicalRecordById(ctx context.Context, in *UUIDReq, opts ...grpc.CallOption) (*MedicalRecordInfo, error)
@@ -97,6 +106,9 @@ type (
 		OauthLogin(ctx context.Context, in *OauthLoginReq, opts ...grpc.CallOption) (*OauthRedirectResp, error)
 		OauthCallback(ctx context.Context, in *CallbackReq, opts ...grpc.CallOption) (*MemberInfo, error)
 		WechatMiniProgramLogin(ctx context.Context, in *OauthLoginReq, opts ...grpc.CallOption) (*BaseResp, error)
+		// Service management
+		GetServiceList(ctx context.Context, in *ServiceListReq, opts ...grpc.CallOption) (*ServiceListResp, error)
+		GetServiceById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*ServiceInfo, error)
 		// Swiper management
 		GetSwiperList(ctx context.Context, in *SwiperListReq, opts ...grpc.CallOption) (*SwiperListResp, error)
 		GetSwiperById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*SwiperInfo, error)
@@ -149,6 +161,17 @@ func (m *defaultMms) DeleteAppointment(ctx context.Context, in *UUIDsReq, opts .
 func (m *defaultMms) InitDatabase(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*BaseResp, error) {
 	client := mms.NewMmsClient(m.cli.Conn())
 	return client.InitDatabase(ctx, in, opts...)
+}
+
+// Expert management
+func (m *defaultMms) GetExpertList(ctx context.Context, in *ExpertListReq, opts ...grpc.CallOption) (*ExpertListResp, error) {
+	client := mms.NewMmsClient(m.cli.Conn())
+	return client.GetExpertList(ctx, in, opts...)
+}
+
+func (m *defaultMms) GetExpertById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*ExpertInfo, error) {
+	client := mms.NewMmsClient(m.cli.Conn())
+	return client.GetExpertById(ctx, in, opts...)
 }
 
 // MedicalRecord management
@@ -285,6 +308,17 @@ func (m *defaultMms) OauthCallback(ctx context.Context, in *CallbackReq, opts ..
 func (m *defaultMms) WechatMiniProgramLogin(ctx context.Context, in *OauthLoginReq, opts ...grpc.CallOption) (*BaseResp, error) {
 	client := mms.NewMmsClient(m.cli.Conn())
 	return client.WechatMiniProgramLogin(ctx, in, opts...)
+}
+
+// Service management
+func (m *defaultMms) GetServiceList(ctx context.Context, in *ServiceListReq, opts ...grpc.CallOption) (*ServiceListResp, error) {
+	client := mms.NewMmsClient(m.cli.Conn())
+	return client.GetServiceList(ctx, in, opts...)
+}
+
+func (m *defaultMms) GetServiceById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*ServiceInfo, error) {
+	client := mms.NewMmsClient(m.cli.Conn())
+	return client.GetServiceById(ctx, in, opts...)
 }
 
 // Swiper management

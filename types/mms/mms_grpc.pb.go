@@ -25,6 +25,8 @@ const (
 	Mms_GetAppointmentById_FullMethodName     = "/mms.Mms/getAppointmentById"
 	Mms_DeleteAppointment_FullMethodName      = "/mms.Mms/deleteAppointment"
 	Mms_InitDatabase_FullMethodName           = "/mms.Mms/initDatabase"
+	Mms_GetExpertList_FullMethodName          = "/mms.Mms/getExpertList"
+	Mms_GetExpertById_FullMethodName          = "/mms.Mms/getExpertById"
 	Mms_GetMedicalRecordList_FullMethodName   = "/mms.Mms/getMedicalRecordList"
 	Mms_GetMedicalRecordById_FullMethodName   = "/mms.Mms/getMedicalRecordById"
 	Mms_GetMedicineList_FullMethodName        = "/mms.Mms/getMedicineList"
@@ -51,6 +53,8 @@ const (
 	Mms_OauthLogin_FullMethodName             = "/mms.Mms/oauthLogin"
 	Mms_OauthCallback_FullMethodName          = "/mms.Mms/oauthCallback"
 	Mms_WechatMiniProgramLogin_FullMethodName = "/mms.Mms/wechatMiniProgramLogin"
+	Mms_GetServiceList_FullMethodName         = "/mms.Mms/getServiceList"
+	Mms_GetServiceById_FullMethodName         = "/mms.Mms/getServiceById"
 	Mms_GetSwiperList_FullMethodName          = "/mms.Mms/getSwiperList"
 	Mms_GetSwiperById_FullMethodName          = "/mms.Mms/getSwiperById"
 	Mms_CreateToken_FullMethodName            = "/mms.Mms/createToken"
@@ -78,6 +82,11 @@ type MmsClient interface {
 	DeleteAppointment(ctx context.Context, in *UUIDsReq, opts ...grpc.CallOption) (*BaseResp, error)
 	//  group: base
 	InitDatabase(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*BaseResp, error)
+	// Expert management
+	// group: expert
+	GetExpertList(ctx context.Context, in *ExpertListReq, opts ...grpc.CallOption) (*ExpertListResp, error)
+	// group: expert
+	GetExpertById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*ExpertInfo, error)
 	// MedicalRecord management
 	// group: medicalRecord
 	GetMedicalRecordList(ctx context.Context, in *MedicalRecordListReq, opts ...grpc.CallOption) (*MedicalRecordListResp, error)
@@ -136,6 +145,11 @@ type MmsClient interface {
 	OauthCallback(ctx context.Context, in *CallbackReq, opts ...grpc.CallOption) (*MemberInfo, error)
 	//  group: oauthprovider
 	WechatMiniProgramLogin(ctx context.Context, in *OauthLoginReq, opts ...grpc.CallOption) (*BaseResp, error)
+	// Service management
+	// group: service
+	GetServiceList(ctx context.Context, in *ServiceListReq, opts ...grpc.CallOption) (*ServiceListResp, error)
+	// group: service
+	GetServiceById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*ServiceInfo, error)
 	// Swiper management
 	// group: swiper
 	GetSwiperList(ctx context.Context, in *SwiperListReq, opts ...grpc.CallOption) (*SwiperListResp, error)
@@ -218,6 +232,26 @@ func (c *mmsClient) InitDatabase(ctx context.Context, in *Empty, opts ...grpc.Ca
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(BaseResp)
 	err := c.cc.Invoke(ctx, Mms_InitDatabase_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *mmsClient) GetExpertList(ctx context.Context, in *ExpertListReq, opts ...grpc.CallOption) (*ExpertListResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ExpertListResp)
+	err := c.cc.Invoke(ctx, Mms_GetExpertList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *mmsClient) GetExpertById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*ExpertInfo, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ExpertInfo)
+	err := c.cc.Invoke(ctx, Mms_GetExpertById_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -484,6 +518,26 @@ func (c *mmsClient) WechatMiniProgramLogin(ctx context.Context, in *OauthLoginRe
 	return out, nil
 }
 
+func (c *mmsClient) GetServiceList(ctx context.Context, in *ServiceListReq, opts ...grpc.CallOption) (*ServiceListResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ServiceListResp)
+	err := c.cc.Invoke(ctx, Mms_GetServiceList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *mmsClient) GetServiceById(ctx context.Context, in *IDReq, opts ...grpc.CallOption) (*ServiceInfo, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ServiceInfo)
+	err := c.cc.Invoke(ctx, Mms_GetServiceById_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *mmsClient) GetSwiperList(ctx context.Context, in *SwiperListReq, opts ...grpc.CallOption) (*SwiperListResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(SwiperListResp)
@@ -581,6 +635,11 @@ type MmsServer interface {
 	DeleteAppointment(context.Context, *UUIDsReq) (*BaseResp, error)
 	//  group: base
 	InitDatabase(context.Context, *Empty) (*BaseResp, error)
+	// Expert management
+	// group: expert
+	GetExpertList(context.Context, *ExpertListReq) (*ExpertListResp, error)
+	// group: expert
+	GetExpertById(context.Context, *IDReq) (*ExpertInfo, error)
 	// MedicalRecord management
 	// group: medicalRecord
 	GetMedicalRecordList(context.Context, *MedicalRecordListReq) (*MedicalRecordListResp, error)
@@ -639,6 +698,11 @@ type MmsServer interface {
 	OauthCallback(context.Context, *CallbackReq) (*MemberInfo, error)
 	//  group: oauthprovider
 	WechatMiniProgramLogin(context.Context, *OauthLoginReq) (*BaseResp, error)
+	// Service management
+	// group: service
+	GetServiceList(context.Context, *ServiceListReq) (*ServiceListResp, error)
+	// group: service
+	GetServiceById(context.Context, *IDReq) (*ServiceInfo, error)
 	// Swiper management
 	// group: swiper
 	GetSwiperList(context.Context, *SwiperListReq) (*SwiperListResp, error)
@@ -684,6 +748,12 @@ func (UnimplementedMmsServer) DeleteAppointment(context.Context, *UUIDsReq) (*Ba
 }
 func (UnimplementedMmsServer) InitDatabase(context.Context, *Empty) (*BaseResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method InitDatabase not implemented")
+}
+func (UnimplementedMmsServer) GetExpertList(context.Context, *ExpertListReq) (*ExpertListResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetExpertList not implemented")
+}
+func (UnimplementedMmsServer) GetExpertById(context.Context, *IDReq) (*ExpertInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetExpertById not implemented")
 }
 func (UnimplementedMmsServer) GetMedicalRecordList(context.Context, *MedicalRecordListReq) (*MedicalRecordListResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetMedicalRecordList not implemented")
@@ -762,6 +832,12 @@ func (UnimplementedMmsServer) OauthCallback(context.Context, *CallbackReq) (*Mem
 }
 func (UnimplementedMmsServer) WechatMiniProgramLogin(context.Context, *OauthLoginReq) (*BaseResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method WechatMiniProgramLogin not implemented")
+}
+func (UnimplementedMmsServer) GetServiceList(context.Context, *ServiceListReq) (*ServiceListResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetServiceList not implemented")
+}
+func (UnimplementedMmsServer) GetServiceById(context.Context, *IDReq) (*ServiceInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetServiceById not implemented")
 }
 func (UnimplementedMmsServer) GetSwiperList(context.Context, *SwiperListReq) (*SwiperListResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetSwiperList not implemented")
@@ -912,6 +988,42 @@ func _Mms_InitDatabase_Handler(srv interface{}, ctx context.Context, dec func(in
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MmsServer).InitDatabase(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Mms_GetExpertList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ExpertListReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MmsServer).GetExpertList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Mms_GetExpertList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MmsServer).GetExpertList(ctx, req.(*ExpertListReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Mms_GetExpertById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IDReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MmsServer).GetExpertById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Mms_GetExpertById_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MmsServer).GetExpertById(ctx, req.(*IDReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1384,6 +1496,42 @@ func _Mms_WechatMiniProgramLogin_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Mms_GetServiceList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ServiceListReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MmsServer).GetServiceList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Mms_GetServiceList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MmsServer).GetServiceList(ctx, req.(*ServiceListReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Mms_GetServiceById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IDReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MmsServer).GetServiceById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Mms_GetServiceById_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MmsServer).GetServiceById(ctx, req.(*IDReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Mms_GetSwiperList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SwiperListReq)
 	if err := dec(in); err != nil {
@@ -1560,6 +1708,14 @@ var Mms_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Mms_InitDatabase_Handler,
 		},
 		{
+			MethodName: "getExpertList",
+			Handler:    _Mms_GetExpertList_Handler,
+		},
+		{
+			MethodName: "getExpertById",
+			Handler:    _Mms_GetExpertById_Handler,
+		},
+		{
 			MethodName: "getMedicalRecordList",
 			Handler:    _Mms_GetMedicalRecordList_Handler,
 		},
@@ -1662,6 +1818,14 @@ var Mms_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "wechatMiniProgramLogin",
 			Handler:    _Mms_WechatMiniProgramLogin_Handler,
+		},
+		{
+			MethodName: "getServiceList",
+			Handler:    _Mms_GetServiceList_Handler,
+		},
+		{
+			MethodName: "getServiceById",
+			Handler:    _Mms_GetServiceById_Handler,
 		},
 		{
 			MethodName: "getSwiperList",

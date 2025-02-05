@@ -16,6 +16,8 @@ type Tx struct {
 	config
 	// Appointment is the client for interacting with the Appointment builders.
 	Appointment *AppointmentClient
+	// Expert is the client for interacting with the Expert builders.
+	Expert *ExpertClient
 	// MedicalRecord is the client for interacting with the MedicalRecord builders.
 	MedicalRecord *MedicalRecordClient
 	// Medicine is the client for interacting with the Medicine builders.
@@ -28,6 +30,8 @@ type Tx struct {
 	News *NewsClient
 	// OauthProvider is the client for interacting with the OauthProvider builders.
 	OauthProvider *OauthProviderClient
+	// Service is the client for interacting with the Service builders.
+	Service *ServiceClient
 	// Swiper is the client for interacting with the Swiper builders.
 	Swiper *SwiperClient
 	// Token is the client for interacting with the Token builders.
@@ -164,12 +168,14 @@ func (tx *Tx) Client() *Client {
 
 func (tx *Tx) init() {
 	tx.Appointment = NewAppointmentClient(tx.config)
+	tx.Expert = NewExpertClient(tx.config)
 	tx.MedicalRecord = NewMedicalRecordClient(tx.config)
 	tx.Medicine = NewMedicineClient(tx.config)
 	tx.Member = NewMemberClient(tx.config)
 	tx.MemberRank = NewMemberRankClient(tx.config)
 	tx.News = NewNewsClient(tx.config)
 	tx.OauthProvider = NewOauthProviderClient(tx.config)
+	tx.Service = NewServiceClient(tx.config)
 	tx.Swiper = NewSwiperClient(tx.config)
 	tx.Token = NewTokenClient(tx.config)
 }

@@ -7,12 +7,14 @@ import (
 	"fmt"
 
 	"github.com/suyuan32/simple-admin-member-rpc/ent/appointment"
+	"github.com/suyuan32/simple-admin-member-rpc/ent/expert"
 	"github.com/suyuan32/simple-admin-member-rpc/ent/medicalrecord"
 	"github.com/suyuan32/simple-admin-member-rpc/ent/medicine"
 	"github.com/suyuan32/simple-admin-member-rpc/ent/member"
 	"github.com/suyuan32/simple-admin-member-rpc/ent/memberrank"
 	"github.com/suyuan32/simple-admin-member-rpc/ent/news"
 	"github.com/suyuan32/simple-admin-member-rpc/ent/oauthprovider"
+	"github.com/suyuan32/simple-admin-member-rpc/ent/service"
 	"github.com/suyuan32/simple-admin-member-rpc/ent/swiper"
 	"github.com/suyuan32/simple-admin-member-rpc/ent/token"
 )
@@ -136,6 +138,87 @@ func (a *AppointmentQuery) Page(
 
 	a = a.Offset(int((pageNum - 1) * pageSize)).Limit(int(pageSize))
 	list, err := a.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	ret.List = list
+
+	return ret, nil
+}
+
+type ExpertPager struct {
+	Order  expert.OrderOption
+	Filter func(*ExpertQuery) (*ExpertQuery, error)
+}
+
+// ExpertPaginateOption enables pagination customization.
+type ExpertPaginateOption func(*ExpertPager)
+
+// DefaultExpertOrder is the default ordering of Expert.
+var DefaultExpertOrder = Desc(expert.FieldID)
+
+func newExpertPager(opts []ExpertPaginateOption) (*ExpertPager, error) {
+	pager := &ExpertPager{}
+	for _, opt := range opts {
+		opt(pager)
+	}
+	if pager.Order == nil {
+		pager.Order = DefaultExpertOrder
+	}
+	return pager, nil
+}
+
+func (p *ExpertPager) ApplyFilter(query *ExpertQuery) (*ExpertQuery, error) {
+	if p.Filter != nil {
+		return p.Filter(query)
+	}
+	return query, nil
+}
+
+// ExpertPageList is Expert PageList result.
+type ExpertPageList struct {
+	List        []*Expert    `json:"list"`
+	PageDetails *PageDetails `json:"pageDetails"`
+}
+
+func (e *ExpertQuery) Page(
+	ctx context.Context, pageNum uint64, pageSize uint64, opts ...ExpertPaginateOption,
+) (*ExpertPageList, error) {
+
+	pager, err := newExpertPager(opts)
+	if err != nil {
+		return nil, err
+	}
+
+	if e, err = pager.ApplyFilter(e); err != nil {
+		return nil, err
+	}
+
+	ret := &ExpertPageList{}
+
+	ret.PageDetails = &PageDetails{
+		Page: pageNum,
+		Size: pageSize,
+	}
+
+	query := e.Clone()
+	query.ctx.Fields = nil
+	count, err := query.Count(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+
+	ret.PageDetails.Total = uint64(count)
+
+	if pager.Order != nil {
+		e = e.Order(pager.Order)
+	} else {
+		e = e.Order(DefaultExpertOrder)
+	}
+
+	e = e.Offset(int((pageNum - 1) * pageSize)).Limit(int(pageSize))
+	list, err := e.All(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -622,6 +705,87 @@ func (op *OauthProviderQuery) Page(
 
 	op = op.Offset(int((pageNum - 1) * pageSize)).Limit(int(pageSize))
 	list, err := op.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	ret.List = list
+
+	return ret, nil
+}
+
+type ServicePager struct {
+	Order  service.OrderOption
+	Filter func(*ServiceQuery) (*ServiceQuery, error)
+}
+
+// ServicePaginateOption enables pagination customization.
+type ServicePaginateOption func(*ServicePager)
+
+// DefaultServiceOrder is the default ordering of Service.
+var DefaultServiceOrder = Desc(service.FieldID)
+
+func newServicePager(opts []ServicePaginateOption) (*ServicePager, error) {
+	pager := &ServicePager{}
+	for _, opt := range opts {
+		opt(pager)
+	}
+	if pager.Order == nil {
+		pager.Order = DefaultServiceOrder
+	}
+	return pager, nil
+}
+
+func (p *ServicePager) ApplyFilter(query *ServiceQuery) (*ServiceQuery, error) {
+	if p.Filter != nil {
+		return p.Filter(query)
+	}
+	return query, nil
+}
+
+// ServicePageList is Service PageList result.
+type ServicePageList struct {
+	List        []*Service   `json:"list"`
+	PageDetails *PageDetails `json:"pageDetails"`
+}
+
+func (s *ServiceQuery) Page(
+	ctx context.Context, pageNum uint64, pageSize uint64, opts ...ServicePaginateOption,
+) (*ServicePageList, error) {
+
+	pager, err := newServicePager(opts)
+	if err != nil {
+		return nil, err
+	}
+
+	if s, err = pager.ApplyFilter(s); err != nil {
+		return nil, err
+	}
+
+	ret := &ServicePageList{}
+
+	ret.PageDetails = &PageDetails{
+		Page: pageNum,
+		Size: pageSize,
+	}
+
+	query := s.Clone()
+	query.ctx.Fields = nil
+	count, err := query.Count(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+
+	ret.PageDetails.Total = uint64(count)
+
+	if pager.Order != nil {
+		s = s.Order(pager.Order)
+	} else {
+		s = s.Order(DefaultServiceOrder)
+	}
+
+	s = s.Offset(int((pageNum - 1) * pageSize)).Limit(int(pageSize))
+	list, err := s.All(ctx)
 	if err != nil {
 		return nil, err
 	}
