@@ -37,7 +37,7 @@ func (l *CreateMemberLogic) CreateMember(in *mms.MemberInfo) (*mms.BaseUUIDResp,
 		}
 
 		if checkMobile {
-			return nil, errorx.NewInvalidArgumentError("login.mobileExist")
+			return &mms.BaseUUIDResp{Msg: i18n.CreateSuccess}, nil
 		}
 	}
 
